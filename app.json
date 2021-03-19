@@ -1,0 +1,12 @@
+{
+  "name": "recipe-vault-native",
+  "displayName": "recipe-vault-native",
+  "expo": {
+    "name": "recipe-vault-native",
+    "slug": "recipe-vault-native",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
