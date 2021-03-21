@@ -4,6 +4,7 @@
   "expo": {
     "name": "recipe-vault-native",
     "slug": "recipe-vault-native",
+    "userInterfaceStyle": "automatic",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
