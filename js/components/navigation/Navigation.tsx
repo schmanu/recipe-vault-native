@@ -5,17 +5,16 @@ import TripListScreen from '../screens/trips/TripListScreen';
 import React from 'react';
 import NavigationHeader from './NavigationHeader';
 import { Appbar } from 'react-native-paper';
+import { useCombinedTheme } from '../hooks/ColorScheme';
+import { DrawerHeaderProps } from '@react-navigation/drawer/lib/typescript/src/types';
 
 const Drawer = createDrawerNavigator();
 
 export default function Navigation() {
+    const theme = useCombinedTheme();
     return (
-        
-    <NavigationContainer>
-        <Drawer.Navigator initialRouteName="Home" edgeWidth={150} screenOptions={{
-            header : () => <NavigationHeader />,
-            headerShown: true,
-        }}>
+    <NavigationContainer theme={theme}>
+        <Drawer.Navigator initialRouteName="Recipes" edgeWidth={150} >
             <Drawer.Screen name="Recipes" component={RecipeListScreen} />
             <Drawer.Screen name="Shopping Trips" component={TripListScreen} />
         </Drawer.Navigator>

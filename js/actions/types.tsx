@@ -1,4 +1,6 @@
-type ParseObject = Object;
-    
+import { Recipe } from "../reducers/Recipes";
+
 export type Action =
-    | { type: "INITIALIZED", list: Array<ParseObject> }
+    | { type: "Section/Added", payload: string }
+    | { type: "Recipe/Added", payload: string }
+    | { type: "Recipe/Edited", payload: Recipe}

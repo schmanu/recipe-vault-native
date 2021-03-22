@@ -1,26 +1,33 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React from 'react';
-import { useGrayScaleColorScheme } from "../../hooks/ColorScheme";
-import { useAppSelector } from "../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { FAB, List } from 'react-native-paper';
 import { CommonActions, useNavigation } from "@react-navigation/core";
-import { createStackNavigator } from '@react-navigation/stack';
-import AddRecipeScreen from "./AddRecipeScreen";
+import { createStackNavigator, StackHeaderProps } from '@react-navigation/stack';
+import EditRecipeScreen from "./EditRecipeScreen";
+import NavigationHeader from "../../navigation/NavigationHeader";
+import uuid from "react-native-uuid";
+
+export type RootStackParamList = {
+    Recipes: undefined;
+    "New Recipe": {recipeId : string};
+}
 
 export default function RecipeListScreen () {
 
-  const RecipeStack = createStackNavigator();
+  const RecipeStack = createStackNavigator<RootStackParamList>();
 
     return (
     <RecipeStack.Navigator screenOptions={{
-      headerShown : false,
-    }}>
+      header : (props : StackHeaderProps) => <NavigationHeader {...props} />,
+      headerShown: true,
+  }}>
       <RecipeStack.Screen
-        name="RecipeList"
+        name="Recipes"
         component={RecipeList} />
       <RecipeStack.Screen
-        name="AddRecipe"
-        component={AddRecipeScreen} />
+        name="New Recipe"
+        component={EditRecipeScreen} />
     </RecipeStack.Navigator>
     )
 }
@@ -30,6 +37,18 @@ function RecipeList() {
   const recipes  = useAppSelector(state => state.recipes);
   const styles = createStyleSheet();
   const navigation = useNavigation();
+  const appDispatch = useAppDispatch();
+  const addRecipe = () => {
+    const recipeId = uuid.v1();
+    appDispatch({
+      type : "Recipe/Added",
+      payload : recipeId,
+    });
+    navigation.dispatch(CommonActions.navigate(
+      "New Recipe", 
+      { recipeId : recipeId }));
+  }
+
   return (
     <View style={styles.container}>
       {recipes.sections.map((section) =>
@@ -47,9 +66,7 @@ function RecipeList() {
       <FAB
         style={styles.fab}
         icon="plus"
-        onPress={() => navigation.dispatch(CommonActions.navigate({
-          name : "AddRecipe"
-        }))}
+        onPress={addRecipe}
       />
     </View>
     );
@@ -60,13 +77,11 @@ RecipeListScreen.navigationOptions = {
 };
 
 function createStyleSheet() {
-  const colorScheme = useGrayScaleColorScheme();
   return StyleSheet.create({
     container: {
       flex: 1,
       paddingTop: 0,
       marginHorizontal: 0,
-      backgroundColor: colorScheme.grayscale900,
     },
     fab: {
       position: 'absolute',
