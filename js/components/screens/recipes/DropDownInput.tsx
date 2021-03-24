@@ -9,15 +9,11 @@ interface DropDownInputProperties {
   onSelectEntry?: (selectedEntry: string) => void,
   onAddEntry?: (newEntry: string) => void,
   canAddEntries?: boolean,
-  defaultOption?: string,
+  value?: string,
   label: string,
 }
 
 export default function DropDownInput(props : DropDownInputProperties) {
-  let defaultOption = "";
-  if (props.options.length > 0) {
-    defaultOption = props.defaultOption ? props.defaultOption : props.options[0];
-  }
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const openDropDown = () => {
     if (!isDropDownOpen) {
@@ -29,14 +25,12 @@ export default function DropDownInput(props : DropDownInputProperties) {
     setIsDropDownOpen(false);
   }
 
-  const [selectedValue, setSelectedValue] = useState(defaultOption);
   const [newOptionValue, setNewOptionValue] = useState("");
   const onOptionSaved = () => {
     if (props.onAddEntry) {
       props.onAddEntry(newOptionValue);
     }
     hideAddDialog();
-    setSelectedValue(newOptionValue);
     setNewOptionValue("");
   }
 
@@ -69,7 +63,7 @@ export default function DropDownInput(props : DropDownInputProperties) {
           <Pressable onPress={openDropDown} onLayout={onLayout}>
             <TextInput
               theme={isDropDownOpen ? hackedTheme : theme}
-              value={selectedValue}
+              value={props.value}
               mode={'outlined'}
               label={props.label}
               pointerEvents={"none"}
@@ -90,7 +84,9 @@ export default function DropDownInput(props : DropDownInputProperties) {
             title={option}
             style={styles.menuItem}
             onPress={() => {
-              setSelectedValue(option);
+              if (props.onSelectEntry) {
+                props.onSelectEntry(option);
+              }
               closeDropDown();
             }}
           />
@@ -138,7 +134,6 @@ export default function DropDownInput(props : DropDownInputProperties) {
       </Portal>
     </View>
   )
-
 }
 
 const styles = StyleSheet.create({
@@ -147,7 +142,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   menuItem: {
-    
     //alignSelf: "center",
   }
 });

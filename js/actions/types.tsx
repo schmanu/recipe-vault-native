@@ -1,6 +1,5 @@
 import { Recipe } from "../reducers/Recipes";
 
 export type Action =
-    | { type: "Section/Added", payload: string }
-    | { type: "Recipe/Added", payload: string }
-    | { type: "Recipe/Edited", payload: Recipe}
+    | { type: "Recipe/Added", payload: {recipeId: string}}
+    | { type: "Recipe/Update", payload: {recipeId: string, recipeUpdate: Partial<Recipe>}}

@@ -2,10 +2,16 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native';
 import { Menu, TextInput, useTheme } from 'react-native-paper';
-import IncredientList from './IncredientList';
+import { Ingredient } from '../../../reducers/Recipes';
+import IngredientList from './IngredientList';
 
+interface IncredientCardProps {
+    title?: string,
+    ingredients: Array<Ingredient>,
+}
 
-export default function IncredientCard() {
+export default function IncredientCard(props : IncredientCardProps) {
+    const {title, ingredients} = props;
     const styles = createStyleSheet();
     return (
     <KeyboardAvoidingView style={
@@ -14,12 +20,12 @@ export default function IncredientCard() {
         <View style={styles.cardView}>
             <TextInput
                 style={styles.titleTextInput}
+                value={title}
                 mode={"flat"}
                 placeholder={"Main Ingredients"}
              />
-            <IncredientList />
-            <Menu.Item title="Ingredient"
-                icon="plus" />
+            <IngredientList ingredients={ingredients} />
+
         </View>
         </KeyboardAvoidingView>
     )

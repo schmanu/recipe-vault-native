@@ -10,7 +10,7 @@ import uuid from "react-native-uuid";
 
 export type RootStackParamList = {
     Recipes: undefined;
-    "New Recipe": {recipeId : string};
+    "Edit Recipe": {recipeId : string};
 }
 
 export default function RecipeListScreen () {
@@ -26,7 +26,7 @@ export default function RecipeListScreen () {
         name="Recipes"
         component={RecipeList} />
       <RecipeStack.Screen
-        name="New Recipe"
+        name="Edit Recipe"
         component={EditRecipeScreen} />
     </RecipeStack.Navigator>
     )
@@ -35,6 +35,7 @@ export default function RecipeListScreen () {
 
 function RecipeList() {
   const recipes  = useAppSelector(state => state.recipes);
+  const sections = Array.from(new Set(recipes.recipes.map(recipe => recipe.section)));
   const styles = createStyleSheet();
   const navigation = useNavigation();
   const appDispatch = useAppDispatch();
@@ -42,21 +43,24 @@ function RecipeList() {
     const recipeId = uuid.v1();
     appDispatch({
       type : "Recipe/Added",
-      payload : recipeId,
+      payload : {recipeId : recipeId},
     });
     navigation.dispatch(CommonActions.navigate(
-      "New Recipe", 
+      "Edit Recipe", 
       { recipeId : recipeId }));
   }
 
   return (
     <View style={styles.container}>
-      {recipes.sections.map((section) =>
-          <List.Section key={section.title}>
-            <List.Subheader>{section.title}</List.Subheader>
-            {section.data.map((recipe) => 
+      {sections.map((section) =>
+          <List.Section key={section}>
+            <List.Subheader>{section}</List.Subheader>
+            {recipes.recipes
+              .filter(recipe => recipe.section === section)
+              .map((recipe) => 
                     <List.Item key={recipe.name}
                       title={recipe.name}
+                      onPress={() => navigation.dispatch(CommonActions.navigate("Edit Recipe", {recipeId: recipe.id}))}
                       left={() => <List.Icon icon="silverware-fork-knife" />}
                       />
 
