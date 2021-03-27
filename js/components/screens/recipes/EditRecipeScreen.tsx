@@ -1,20 +1,21 @@
 import { useRoute } from '@react-navigation/core';
 import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, Text } from 'react-native';
 import { KeyboardAvoidingView, View } from 'react-native';
-import { TextInput, useTheme } from 'react-native-paper';
+import { Divider, FAB, Menu, TextInput, useTheme } from 'react-native-paper';
 import { Recipe } from '../../../reducers/Recipes';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import IngredientCard from '../../ui/ingredients/IngredientCard';
-import IncredientCard from '../../ui/ingredients/IngredientCard';
-import DropDownInput from './DropDownInput';
+import DropDownInput from '../../common/DropDownInput';
 import { RootStackParamList } from './RecipeListScreen';
+import Section from '../../common/Section';
+import uuid from 'react-native-uuid';
+import IngredientCard from '../../ui/ingredients/IngredientCard';
 
 type NewRecipeRouteProp = RouteProp<RootStackParamList, "Edit Recipe">;
 
 export default function EditRecipeScreen() {
-  const recipes  = useAppSelector(state => state.recipes);
+  const recipes = useAppSelector(state => state.recipes);
   const dispatch = useAppDispatch();
   const route = useRoute<NewRecipeRouteProp>();
   const sections = Array.from(new Set(recipes.recipes.map(recipe => recipe.section)));
@@ -23,12 +24,12 @@ export default function EditRecipeScreen() {
     .find(recipe => recipe.id === route.params.recipeId);
   if (!openRecipe) {
     console.log("No Recipe Found for id: " + route.params.recipeId)
-    return <View/>;
+    return <View />;
   }
-  const updateRecipe = (recipeUpdate : Partial<Recipe>) => {
+  const updateRecipe = (recipeUpdate: Partial<Recipe>) => {
     dispatch({
-      type : "Recipe/Update",
-      payload : {recipeUpdate: recipeUpdate, recipeId: openRecipe.id},
+      type: "Recipe/Update",
+      payload: { recipeUpdate: recipeUpdate, recipeId: openRecipe.id },
     });
   }
 
@@ -38,28 +39,50 @@ export default function EditRecipeScreen() {
 
   return (
     <KeyboardAvoidingView style={
-      {flex: 1}
+      { flex: 1 }
     }>
-        <ScrollView
-          style={[styles.container, {
-            backgroundColor: background
-          }]}>
-          <DropDownInput
-            label="Section"
-            options={sections}
-            canAddEntries
-            onAddEntry={(newEntry) => updateRecipe({section: newEntry})}
-            onSelectEntry={(newEntry) => updateRecipe({section: newEntry})}
-            value={openRecipe.section}
-             />
+      <ScrollView
+        style={[styles.container, {
+          backgroundColor: background
+        }]}>
+        <DropDownInput
+          label="Section"
+          options={sections}
+          canAddEntries
+          onAddEntry={(newEntry) => updateRecipe({ section: newEntry })}
+          onSelectEntry={(newEntry) => updateRecipe({ section: newEntry })}
+          value={openRecipe.section}
+        />
 
-          <TextInput
-            label="Recipe Name"
-            mode="outlined"
-            value={openRecipe.name}
-            onChangeText={(newName) => updateRecipe({name: newName})} />
-          {openRecipe.incredientCards.map(card => <IngredientCard title={card.name} ingredients={card.incredients} />)}
-        </ScrollView>
+        <TextInput
+          label="Recipe Name"
+          mode="outlined"
+          value={openRecipe.name}
+          onChangeText={(newName) => updateRecipe({ name: newName })} />
+        <Section label={"Ingredients"} />
+
+        {openRecipe.ingredientCards.map(card => <IngredientCard card={card} onUpdate={(newIngredientSet) =>
+          updateRecipe({
+            ingredientCards: openRecipe.ingredientCards.map((card => {
+              if (card.id === newIngredientSet.id) {
+                return newIngredientSet;
+              } else {
+                return card;
+              }
+            }))
+          })} />)}
+
+        <View
+          style={styles.footer}>
+          <FAB
+            style={styles.fab}
+            icon="plus"
+            onPress={() => updateRecipe({ ingredientCards: [...openRecipe.ingredientCards, { id: uuid.v1(), ingredients: [] }] })}
+          />
+        </View>
+      </ScrollView>
+
+
     </KeyboardAvoidingView>
   );
 }
@@ -92,4 +115,12 @@ const styles = StyleSheet.create({
   textArea: {
     height: 80,
   },
+  footer: {
+    flex: 1, flexDirection: "row", minHeight: 100
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+  }
 });

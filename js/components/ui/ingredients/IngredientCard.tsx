@@ -2,16 +2,16 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native';
 import { Menu, TextInput, useTheme } from 'react-native-paper';
-import { Ingredient } from '../../../reducers/Recipes';
+import { Ingredient, IngredientSet } from '../../../reducers/Recipes';
 import IngredientList from './IngredientList';
 
-interface IncredientCardProps {
-    title?: string,
-    ingredients: Array<Ingredient>,
+interface IngredientCardProps {
+    card: IngredientSet,
+    onUpdate: (ingredienSet: IngredientSet) => void;
 }
 
-export default function IncredientCard(props : IncredientCardProps) {
-    const {title, ingredients} = props;
+export default function IngredientCard(props : IngredientCardProps) {
+    const {card, onUpdate} = props;
     const styles = createStyleSheet();
     return (
     <KeyboardAvoidingView style={
@@ -20,11 +20,12 @@ export default function IncredientCard(props : IncredientCardProps) {
         <View style={styles.cardView}>
             <TextInput
                 style={styles.titleTextInput}
-                value={title}
+                value={card.name}
                 mode={"flat"}
-                placeholder={"Main Ingredients"}
+                dense
+                onChangeText={(newText) => onUpdate({...card, name: newText})}
              />
-            <IngredientList ingredients={ingredients} />
+            <IngredientList ingredients={card.ingredients} onUpdate={(ingredients) => onUpdate({...card, ingredients: ingredients})} />
 
         </View>
         </KeyboardAvoidingView>
@@ -37,9 +38,12 @@ function createStyleSheet() {
         cardView: {
             marginTop: 16,
             padding: 8,
-            borderRadius : 10,
+            borderRadius : 3,
             borderWidth : 1,
+            backgroundColor: paperTheme.colors.surface,
             borderColor : paperTheme.colors.placeholder,
+            elevation: 3,
+            
         },
         titleTextInput : {
             marginTop: 0,

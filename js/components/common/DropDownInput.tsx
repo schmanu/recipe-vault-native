@@ -1,4 +1,4 @@
-import {  } from '@react-navigation/core';
+import { } from '@react-navigation/core';
 import React, { useState } from 'react';
 import { LayoutChangeEvent, Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native';
@@ -10,10 +10,13 @@ interface DropDownInputProperties {
   onAddEntry?: (newEntry: string) => void,
   canAddEntries?: boolean,
   value?: string,
-  label: string,
+  label?: string,
+  mode?: "flat" | "outlined",
+  dense?: boolean,
+  placeholder?: string,
 }
 
-export default function DropDownInput(props : DropDownInputProperties) {
+export default function DropDownInput(props: DropDownInputProperties) {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const openDropDown = () => {
     if (!isDropDownOpen) {
@@ -52,7 +55,7 @@ export default function DropDownInput(props : DropDownInputProperties) {
   };
 
   const theme = useTheme();
-  const hackedTheme = {...theme, colors : {...theme.colors, placeholder : theme.colors.primary}};
+  const hackedTheme = { ...theme, colors: { ...theme.colors, placeholder: theme.colors.primary } };
 
   return (
     <View style={styles.container}>
@@ -64,11 +67,12 @@ export default function DropDownInput(props : DropDownInputProperties) {
             <TextInput
               theme={isDropDownOpen ? hackedTheme : theme}
               value={props.value}
-              mode={'outlined'}
+              mode={props.mode ? props.mode : "outlined"}
               label={props.label}
               pointerEvents={"none"}
               editable={false}
-              right={<TextInput.Icon name="arrow-down-drop-circle-outline" />}
+              dense={props.dense}
+              placeholder={props.placeholder}
             />
           </Pressable>
         }
@@ -77,7 +81,7 @@ export default function DropDownInput(props : DropDownInputProperties) {
           width: inputLayout?.width,
           marginTop: inputLayout?.height,
         }}
-        >
+      >
         {props.options.map((option =>
           <Menu.Item
             key={option}
@@ -91,47 +95,53 @@ export default function DropDownInput(props : DropDownInputProperties) {
             }}
           />
         ))}
-        <Divider />
-        <Menu.Item
-          title={"New Section"}
-          icon={"plus"}
-          onPress={showAddDialog}
-        >
-        </Menu.Item>
+        {props.canAddEntries &&
+          <>
+            <Divider />
+            <Menu.Item
+              title={"New Section"}
+              icon={"plus"}
+              onPress={showAddDialog}
+            >
+            </Menu.Item>
+          </>
+        }
       </Menu>
-      <Portal>
-        <Dialog
-          visible={isAddDialogVisible}
-          onDismiss={hideAddDialog}>
-          <Dialog.Title style={{
-            paddingTop : 0,
-            paddingBottom : 0,
-            marginTop : 8,
-            marginBottom : 8,
+      {props.canAddEntries &&
+        <Portal>
+          <Dialog
+            visible={isAddDialogVisible}
+            onDismiss={hideAddDialog}>
+            <Dialog.Title style={{
+              paddingTop: 0,
+              paddingBottom: 0,
+              marginTop: 8,
+              marginBottom: 8,
 
-          }}> Enter new {props.label} </Dialog.Title>
-          <Divider />
-          <Dialog.Content style={{
-            paddingTop : 8,
-            paddingBottom : 8,
-          }}>
-            <TextInput
-              mode={"flat"}
-              style= {{
-                fontSize : 14,
-                height: 48,
-              }}
-              value={newOptionValue}
-              onChangeText={setNewOptionValue}
-            />
-          </Dialog.Content>
-          <Divider />
-          <Dialog.Actions>
-          <Button onPress={hideAddDialog}> Cancel</Button>
-            <Button onPress={onOptionSaved}> OK</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+            }}> Enter new {props.label} </Dialog.Title>
+            <Divider />
+            <Dialog.Content style={{
+              paddingTop: 8,
+              paddingBottom: 8,
+            }}>
+              <TextInput
+                mode={"flat"}
+                style={{
+                  fontSize: 14,
+                  height: 48,
+                }}
+                value={newOptionValue}
+                onChangeText={setNewOptionValue}
+              />
+            </Dialog.Content>
+            <Divider />
+            <Dialog.Actions>
+              <Button onPress={hideAddDialog}> Cancel</Button>
+              <Button onPress={onOptionSaved}> OK</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      }
     </View>
   )
 }

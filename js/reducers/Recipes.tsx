@@ -5,21 +5,26 @@ export type Recipe = {
   name: string,
   section: string,
   id: string,
-  incredientCards: Array<IncredientCard>
+  ingredientCards: Array<IngredientSet>
 }
 
-export type IncredientCard = {
+export type IngredientSet = {
   name?: string,
-  incredients: Array<Ingredient>
+  id: string,
+  ingredients: Array<Ingredient>
 }
 
 export type Ingredient = {
   name: string,
   quantitiy?: number,
-  unit: Unit,
+  unit?: Unit,
 }
-
-export type Unit = "cup" | "g" | "ml" | "l";
+export enum Unit {
+  cup="cup", 
+  g="g", 
+  ml="ml", 
+  l="l",
+}
 
 
 export type RecipesState = {
@@ -47,7 +52,7 @@ function recipes(state: RecipesState = initialState, action: Action): RecipesSta
               name: "New Recipe",
               section: "Default",
               id: recipeId,
-              incredientCards: [],
+              ingredientCards: [],
             }]};
     case "Recipe/Update":
       const recipeUpdate = action.payload.recipeUpdate;

@@ -58,7 +58,7 @@ function RecipeList() {
             {recipes.recipes
               .filter(recipe => recipe.section === section)
               .map((recipe) => 
-                    <List.Item key={recipe.name}
+                    <List.Item key={recipe.id}
                       title={recipe.name}
                       onPress={() => navigation.dispatch(CommonActions.navigate("Edit Recipe", {recipeId: recipe.id}))}
                       left={() => <List.Icon icon="silverware-fork-knife" />}
