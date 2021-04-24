@@ -42,6 +42,7 @@ export default function EditRecipeScreen() {
       { flex: 1 }
     }>
       <ScrollView
+        keyboardShouldPersistTaps={"always"}
         style={[styles.container, {
           backgroundColor: background
         }]}>
@@ -122,5 +123,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     margin: 16,
     right: 0,
+    elevation: 2,
   }
 });

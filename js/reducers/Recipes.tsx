@@ -20,10 +20,12 @@ export type Ingredient = {
   unit?: Unit,
 }
 export enum Unit {
-  cup="cup", 
   g="g", 
   ml="ml", 
   l="l",
+  tbsp="tbsp",
+  tsp="tsp",
+  cups="cups", 
 }
 
 

@@ -38,16 +38,19 @@ function createStyleSheet() {
         cardView: {
             marginTop: 16,
             padding: 8,
+            paddingBottom: 0,
             borderRadius : 3,
             borderWidth : 1,
-            backgroundColor: paperTheme.colors.surface,
+            backgroundColor: paperTheme.colors.background,
             borderColor : paperTheme.colors.placeholder,
-            elevation: 3,
+            elevation: 1,
             
         },
         titleTextInput : {
             marginTop: 0,
             paddingTop: 0,
+            fontWeight: "900",
+            backgroundColor: paperTheme.colors.background,
         }
     });
 }

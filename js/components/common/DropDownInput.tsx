@@ -1,5 +1,5 @@
 import { } from '@react-navigation/core';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { LayoutChangeEvent, Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { Button, Dialog, Divider, Menu, Portal, TextInput, useTheme } from 'react-native-paper';
@@ -55,7 +55,13 @@ export default function DropDownInput(props: DropDownInputProperties) {
   };
 
   const theme = useTheme();
-  const hackedTheme = { ...theme, colors: { ...theme.colors, placeholder: theme.colors.primary } };
+  const hackedTheme = { ...theme, colors: { ...theme.colors, placeholder: theme.colors.primary }};
+
+  let textInputStyle = StyleSheet.create({
+    textInput: {
+      backgroundColor: theme.colors.background,
+    }
+  });
 
   return (
     <View style={styles.container}>
@@ -66,6 +72,7 @@ export default function DropDownInput(props: DropDownInputProperties) {
           <Pressable onPress={openDropDown} onLayout={onLayout}>
             <TextInput
               theme={isDropDownOpen ? hackedTheme : theme}
+              style={textInputStyle.textInput}
               value={props.value}
               mode={props.mode ? props.mode : "outlined"}
               label={props.label}
