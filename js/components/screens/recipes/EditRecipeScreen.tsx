@@ -62,7 +62,7 @@ export default function EditRecipeScreen() {
           onChangeText={(newName) => updateRecipe({ name: newName })} />
         <Section label={"Ingredients"} />
 
-        {openRecipe.ingredientCards.map(card => <IngredientCard card={card} onUpdate={(newIngredientSet) =>
+        {openRecipe.ingredientCards.map((card, idx) => <IngredientCard stepNo={idx + 1} card={card} onUpdate={(newIngredientSet) =>
           updateRecipe({
             ingredientCards: openRecipe.ingredientCards.map((card => {
               if (card.id === newIngredientSet.id) {
@@ -71,7 +71,12 @@ export default function EditRecipeScreen() {
                 return card;
               }
             }))
-          })} />)}
+          })}
+          onRemove={(removedId) => {
+            updateRecipe({
+              ingredientCards: openRecipe.ingredientCards.filter((card) => card.id !== removedId)
+            })
+          }} />)}
 
         <View
           style={styles.footer}>

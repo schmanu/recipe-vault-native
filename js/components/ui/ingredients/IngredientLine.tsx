@@ -8,28 +8,24 @@ import { useCombinedTheme } from '../../hooks/ColorScheme';
 
 export interface IngredientLineProps {
     ingredient: Ingredient,
-    focusedIngredient: Ingredient | null,
     onUpdate: (updatedIngredient: Ingredient) => void,
-    onRemove: (removedIngredient: Ingredient) => void,
-    onFocus: (focusedIngredient: Ingredient) => void,
+    onRemove: () => void,
 }
 
 export default function IncredientLine(props: IngredientLineProps) {
-    const {ingredient, focusedIngredient, onUpdate, onRemove, onFocus} = props;
+    const {ingredient, onUpdate, onRemove} = props;
     const ingredientRef = useRef<NativeTextInput>(null);
     const theme = useCombinedTheme();
     const styles = createStyles();
-
-    const hasFocus = ingredient === focusedIngredient;
-    console.log("current focus is: " + focusedIngredient?.name)    
+    const [hasFocus, setHasFocus] = useState(true)
 
     return (
-        <TouchableWithoutFeedback onFocus={() => onFocus(ingredient)}>
+        <TouchableWithoutFeedback onBlur={() => setHasFocus(false)} onFocus={() => setHasFocus(true)}>
             <View style={styles.container} >
                 <TextInput
                     theme={theme}
                     style={styles.textInputAmount}
-                    keyboardType="number-pad" 
+                    keyboardType="number-pad"
                     dense
                     value={ingredient.quantitiy?.toString()}
                     onChangeText={(newAmount) => onUpdate({...ingredient, quantitiy: getAmount(newAmount)})} />
@@ -55,7 +51,7 @@ export default function IncredientLine(props: IngredientLineProps) {
                     onChangeText={(newName) => onUpdate({...ingredient, name: newName})} 
                     />
                 <View style={{flex: 1}}>
-                    <IconButton style={hasFocus ? {flex: 1, alignSelf: "center"} : {flex: 1, alignSelf: "center", display: "none"}} size={19} icon="close" onPress={() => {console.log("onRemove"); onRemove(ingredient)}} />
+                    <IconButton style={hasFocus ? {flex: 1, alignSelf: "center"} : {flex: 1, alignSelf: "center", display: "none"}} size={19} icon="close" onPress={() => {console.log("onRemove"); onRemove()}} />
                 </View>
             </View>
         </TouchableWithoutFeedback>

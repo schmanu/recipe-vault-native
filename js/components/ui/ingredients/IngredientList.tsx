@@ -13,7 +13,6 @@ interface IngredientListProps {
 export default function IngredientList(props: IngredientListProps) {
     const { ingredients, onUpdate } = props;
 
-    const [focusedIngredient, setFocusedIngredient] = useState<Ingredient | null>(null); 
     return (
         <View>
             {ingredients.map((ingredient, idx) =>
@@ -26,12 +25,9 @@ export default function IngredientList(props: IngredientListProps) {
                             }
                         }
                         ));
-                        setFocusedIngredient(updatedIngredient);
                     }}
-                    onRemove={(removedIngredient) => onUpdate(ingredients.filter((ingredient, innerIdx) => idx != innerIdx))}
-                    onFocus={(newFocus) => {setFocusedIngredient(newFocus);}}
-                    ingredient={ingredient}
-                    focusedIngredient={focusedIngredient} />)}
+                    onRemove={() => onUpdate(ingredients.filter((_, innerIdx) => idx != innerIdx))}
+                    ingredient={ingredient} />)}
             <Menu.Item title="Ingredient"
                 icon="plus" onPress={() => onUpdate([...ingredients, { name: "" }])} />
         </View>
